@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     compose_file_path: str = str(PROJECT_ROOT / "docker-compose.yml")
     api_host: str = "0.0.0.0"
     api_port: int = 8000
+    api_key: str = Field(alias="DRIFTGUARD_API_KEY")
     polling_interval: int = Field(default=60, alias="POLL_INTERVAL_SECONDS")
 
     @model_validator(mode="after")
