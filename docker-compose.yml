@@ -1,0 +1,44 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: driftguard
+      POSTGRES_PASSWORD: driftguard
+      POSTGRES_DB: driftguard
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  core:
+    build: ./core
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./core:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: .env
+    depends_on:
+      - postgres
+      - redis
+
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3000:3000"
+    env_file: .env
+    depends_on:
+      - core
+
+volumes:
+  postgres_data:
+  redis_data:
