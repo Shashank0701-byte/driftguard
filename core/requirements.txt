@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+docker
+pyyaml
+sqlalchemy
+asyncpg
+alembic
+redis
+aioredis
+apscheduler
+typer
+pydantic-settings
+python-dotenv
+rich
+httpx
+pytest
+pytest-asyncio
