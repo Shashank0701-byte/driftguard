@@ -21,7 +21,7 @@ def _image_name(container) -> str:
 def snapshot_live(socket: str = "unix:///var/run/docker.sock") -> Dict[str, Any]:
     """Capture current live Docker container state."""
     client = docker.DockerClient(base_url=socket)
-    containers = client.containers.list(all=True)
+    containers = client.containers.list()
     live = {}
 
     for c in containers:
@@ -30,11 +30,11 @@ def snapshot_live(socket: str = "unix:///var/run/docker.sock") -> Dict[str, Any]
         service_name = labels.get("com.docker.compose.service", c.name)
 
         # Parse ports into same format as compose
-        ports = []
+        ports = set()
         for internal, bindings in (c.ports or {}).items():
             if bindings:
                 for b in bindings:
-                    ports.append(f"{b['HostPort']}:{internal.split('/')[0]}")
+                    ports.add(f"{b['HostPort']}:{internal.split('/')[0]}")
 
         # Parse environment variables
         env = {}
@@ -45,7 +45,7 @@ def snapshot_live(socket: str = "unix:///var/run/docker.sock") -> Dict[str, Any]
 
         live[service_name] = {
             "image":       _image_name(c),
-            "ports":       ports,
+            "ports":       sorted(ports),
             "environment": env,
             "status":      c.status,
             "container_id": c.short_id,

@@ -13,3 +13,8 @@ __pycache__/
 
 .pytest_cache/
 .mypy_cache/
+node_modules/
+dist/
+build/
+*.egg-info/
+.next/
